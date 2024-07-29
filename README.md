@@ -54,7 +54,8 @@ sed -i -e "/^\[p2p\]/,/^\[/{s/^[[:space:]]*seeds *=.*/seeds = \"$SEEDS\"/}" \
        -e "/^\[p2p\]/,/^\[/{s/^[[:space:]]*persistent_peers *=.*/persistent_peers = \"$PEERS\"/}" $HOME/.galactica/config/config.toml
 ```
 
-# set custom ports in app.toml
+**set custom ports in app.toml**
+```
 sed -i.bak -e "s%:1317%:${GALACTICA_PORT}317%g;
 s%:8080%:${GALACTICA_PORT}080%g;
 s%:9090%:${GALACTICA_PORT}090%g;
@@ -62,26 +63,34 @@ s%:9091%:${GALACTICA_PORT}091%g;
 s%:8545%:${GALACTICA_PORT}545%g;
 s%:8546%:${GALACTICA_PORT}546%g;
 s%:6065%:${GALACTICA_PORT}065%g" $HOME/.galactica/config/app.toml
+```
 
-# set custom ports in config.toml file
+**set custom ports in config.toml file**
+```
 sed -i.bak -e "s%:26658%:${GALACTICA_PORT}658%g;
 s%:26657%:${GALACTICA_PORT}657%g;
 s%:6060%:${GALACTICA_PORT}060%g;
 s%:26656%:${GALACTICA_PORT}656%g;
 s%^external_address = \"\"%external_address = \"$(wget -qO- eth0.me):${GALACTICA_PORT}656\"%;
 s%:26660%:${GALACTICA_PORT}660%g" $HOME/.galactica/config/config.toml
+```
 
-# config pruning
+**config pruning**
+```
 sed -i -e "s/^pruning *=.*/pruning = \"custom\"/" $HOME/.galactica/config/app.toml
 sed -i -e "s/^pruning-keep-recent *=.*/pruning-keep-recent = \"100\"/" $HOME/.galactica/config/app.toml
 sed -i -e "s/^pruning-interval *=.*/pruning-interval = \"50\"/" $HOME/.galactica/config/app.toml
+```
 
-# set minimum gas price, enable prometheus and disable indexing
+**set minimum gas price, enable prometheus and disable indexing**
+```
 sed -i 's|minimum-gas-prices =.*|minimum-gas-prices = "10agnet"|g' $HOME/.galactica/config/app.toml
 sed -i -e "s/prometheus = false/prometheus = true/" $HOME/.galactica/config/config.toml
 sed -i -e "s/^indexer *=.*/indexer = \"null\"/" $HOME/.galactica/config/config.toml
+```
 
-# create service file
+**create service file**
+```
 sudo tee /etc/systemd/system/galacticad.service > /dev/null <<EOF
 [Unit]
 Description=Galactica node
@@ -96,16 +105,20 @@ LimitNOFILE=65535
 [Install]
 WantedBy=multi-user.target
 EOF
-
-# reset and download snapshot
+```
+**reset and download snapshot**
+```
 galacticad tendermint unsafe-reset-all --home $HOME/.galactica
 if curl -s --head curl https://server-4.itrocket.net/testnet/galactica/galactica_2024-07-26_1609629_snap.tar.lz4 | head -n 1 | grep "200" > /dev/null; then
   curl https://server-4.itrocket.net/testnet/galactica/galactica_2024-07-26_1609629_snap.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.galactica
     else
   echo "no snapshot founded"
 fi
+```
 
-# enable and start service
+**enable and start service**
+```
 sudo systemctl daemon-reload
 sudo systemctl enable galacticad
 sudo systemctl restart galacticad && sudo journalctl -u galacticad -f
+```
