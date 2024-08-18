@@ -1,3 +1,5 @@
+x: https://x.com/GalacticaNet
+
 **install go, if needed**
 ```
 cd $HOME
