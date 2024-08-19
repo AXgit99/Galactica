@@ -44,8 +44,8 @@ galacticad init "test" --chain-id galactica_9302-1
 
 **download genesis and addrbook**
 ```
-wget -O $HOME/.galactica/config/genesis.json https://server-4.itrocket.net/testnet/galactica/genesis.json
-wget -O $HOME/.galactica/config/addrbook.json  https://server-4.itrocket.net/testnet/galactica/addrbook.json
+wget -O $HOME/.galactica/config/genesis.json https://raw.githubusercontent.com/AXgit99/Galactica/main/genesis.json
+wget -O $HOME/.galactica/config/addrbook.json  https://raw.githubusercontent.com/AXgit99/Galactica/main/addrbook.json
 ```
 
 **set seeds and peers**
